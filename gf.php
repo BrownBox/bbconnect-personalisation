@@ -24,7 +24,7 @@ function bbconnect_personalisation_populate_form($form) {
             // Standard fields
             switch ($field->type) {
                 case 'email':
-                    $field->defaultValue = $email;
+                    $field->defaultValue = $user->user_email;
                     break;
                 case 'name':
                     foreach ($field->inputs as &$input) {
@@ -39,7 +39,7 @@ function bbconnect_personalisation_populate_form($form) {
 
             // Fields mapped to user meta
             if (!empty($field->inputs)) {
-                foreach ($field->inputs as $input) {
+                foreach ($field->inputs as &$input) {
                     if (!empty($input['usermeta_key'])) {
                         switch ($input['usermeta_key']) {
                             case 'telephone':
