@@ -1,19 +1,21 @@
 <?php
 /**
  * Get unique key for a user
- * @param integer $user_id Optional. If empty will use logged in user.
+ * @param WP_User|integer $user Optional. User to update. Can be either user ID or WP_User object. If empty will use logged in user.
  * @return string|boolean Key for specified user or false if user doesn't exist.
  */
-function bbconnect_personalisation_get_key_for_user($user_id = null) {
-    if (empty($user_id)) {
-        $user_id = get_current_user_id();
+function bbconnect_personalisation_get_key_for_user($user = null) {
+    if (empty($user)) {
+        $user = get_current_user_id();
     }
-    if (!empty($user_id)) {
-        $user = get_user_by('id', $user_id);
+    if (!empty($user)) {
+        if (is_numeric($user)) {
+            $user = get_user_by('id', $user);
+        }
         if ($user instanceof WP_User) {
-            $key = get_user_meta($user_id, 'bbconnect_personalisation_key', true);
+            $key = get_user_meta($user->ID, 'bbconnect_personalisation_key', true);
             if (empty($key)) {
-                $key = bbconnect_personalisation_generate_key($user_id);
+                $key = bbconnect_personalisation_generate_key($user->ID);
             }
             return $key;
         }
@@ -63,6 +65,25 @@ function bbconnect_personalisation_generate_key($user_id = null) {
     }
 
     return $key;
+}
+
+add_action('bbconnect_personalisation_generate_keys_for_all_users', 'bbconnect_personalisation_generate_keys_for_all_users');
+/**
+ * Generate keys for all users who don't already have one. Don't call this function directly - it's run automatically when the plugin activates and then every hour after that.
+ */
+function bbconnect_personalisation_generate_keys_for_all_users() {
+    if (empty(get_option('bbconnect_personalisation_generate_lock'))) {
+        update_option('bbconnect_personalisation_generate_lock', true);
+        // Generate a unique key for all existing users
+        set_time_limit(600);
+        $users = get_users();
+        foreach ($users as $user) {
+            set_time_limit(300);
+            update_option('bbconnect_personalisation_generate_lock', $user->ID);
+            bbconnect_personalisation_get_key_for_user($user);
+        }
+        delete_option('bbconnect_personalisation_generate_lock');
+    }
 }
 
 add_filter('bbconnect_field_disabled', 'bbconnect_personalisation_field_disabled', 10, 2);

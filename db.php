@@ -13,8 +13,8 @@ function bbconnect_personalisation_updates() {
 
         foreach ($db_versions as $version) {
             if (version_compare($version, $dbv, '>')) {
-                call_user_func('bbconnect_personalisation_db_update_'.str_replace('.', '_', $version));
                 update_option('_bbconnect_personalisation_version', $version);
+                call_user_func('bbconnect_personalisation_db_update_'.str_replace('.', '_', $version));
             }
         }
         update_option('_bbconnect_personalisation_version', BBCONNECT_PERSONALISATION_VERSION);
@@ -65,8 +65,10 @@ function bbconnect_personalisation_db_update_0_1() {
 
 function bbconnect_personalisation_db_update_0_1_1() {
     // Generate a unique key for all existing users
-    $users = get_users();
-    foreach ($users as $user) {
-        bbconnect_personalisation_generate_key($user->ID);
-    }
+    wp_schedule_single_event(time()-24*HOUR_IN_SECONDS, 'bbconnect_personalisation_generate_keys_for_all_users');
+}
+
+function bbconnect_personalisation_db_update_0_1_3() {
+    // Schedule hourly check for any users who may have somehow missed out on a key
+    wp_schedule_event(time(), 'hourly', 'bbconnect_personalisation_generate_keys_for_all_users');
 }
