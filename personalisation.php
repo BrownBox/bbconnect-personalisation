@@ -14,7 +14,6 @@ define('BBCONNECT_PERSONALISATION_URL', plugin_dir_url(__FILE__));
 
 require_once (BBCONNECT_PERSONALISATION_DIR.'db.php');
 require_once (BBCONNECT_PERSONALISATION_DIR.'fx.php');
-require_once (BBCONNECT_PERSONALISATION_DIR.'gf.php');
 
 function bbconnect_personalisation_init() {
     if (!defined('BBCONNECT_VER')) {

@@ -99,3 +99,17 @@ function bbconnect_personalisation_field_disabled($disabled, $key) {
     }
     return $disabled;
 }
+
+add_filter('bbconnect_identify_user', 'bbconnect_personalisation_identify_user');
+/**
+ * Check for key and find matching user
+ * @param mixed $user Previously identified user
+ * @return WP_User|mixed User identified by key else original user
+ */
+function bbconnect_personalisation_identify_user($user) {
+    $key_user = bbconnect_personalisation_get_user_for_key();
+    if ($key_user instanceof WP_User) {
+        return $key_user;
+    }
+    return $user;
+}
