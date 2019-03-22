@@ -33,18 +33,24 @@ function bbconnect_personalisation_get_user_for_key($key = null) {
         $key = $_GET['bbpk'];
     }
     if (!empty($key)) {
-        $args = array(
-                'meta_query' => array(
-                        array(
-                                'key' => 'bbconnect_personalisation_key',
-                                'value' => $key,
-                        ),
-                ),
-        );
-        $users = get_users($args);
-        if (count($users)) {
-            return array_shift($users);
+        $user = wp_cache_get('bbconnect_personalisation_user', '', false, $found);
+        if ($found === false) {
+            $args = array(
+                    'number' => 1,
+                    'meta_query' => array(
+                            array(
+                                    'key' => 'bbconnect_personalisation_key',
+                                    'value' => $key,
+                            ),
+                    ),
+            );
+            $users = get_users($args);
+            if (!empty($users)) {
+                $user = array_shift($users);
+            }
+            wp_cache_set('bbconnect_personalisation_user', $user);
         }
+        return $user;
     }
     return false;
 }
