@@ -30,7 +30,7 @@ function bbconnect_personalisation_get_key_for_user($user = null) {
  */
 function bbconnect_personalisation_get_user_for_key($key = null) {
     if (empty($key) && isset($_GET['bbpk'])) {
-        $key = $_GET['bbpk'];
+        $key = sanitize_text_field($_GET['bbpk']);
     }
     if (!empty($key)) {
         $user = wp_cache_get('bbconnect_personalisation_user', '', false, $found);
