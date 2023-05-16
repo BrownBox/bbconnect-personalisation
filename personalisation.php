@@ -3,12 +3,12 @@
  * Plugin Name: Connexions Personalisation
  * Plugin URI: http://connexionscrm.com/
  * Description: Generates a unique key for each of your users that can be pushed to other web systems or used as a placeholder to enable personalised digital correspondence and customisation
- * Version: 0.1.5
+ * Version: 0.1.6
  * Author: Brown Box
  * Author URI: http://brownbox.net.au
  * License: Proprietary Brown Box
  */
-define('BBCONNECT_PERSONALISATION_VERSION', '0.1.5');
+define('BBCONNECT_PERSONALISATION_VERSION', '0.1.6');
 define('BBCONNECT_PERSONALISATION_DIR', plugin_dir_path(__FILE__));
 define('BBCONNECT_PERSONALISATION_URL', plugin_dir_url(__FILE__));
 
