@@ -127,3 +127,9 @@ function bbconnect_personalisation_identify_user($user) {
     }
     return $user;
 }
+
+add_filter('bbconnect_kpi_cron_mailchimp_push_data', 'bbconnect_personalisation_kpi_cron_push_data', 10, 3);
+function bbconnect_personalisation_kpi_cron_push_data($push_data, $user, $kpi_prefix) {
+	$push_data['KEY'] = bbconnect_personalisation_get_key_for_user($user);
+	return $push_data;
+}
