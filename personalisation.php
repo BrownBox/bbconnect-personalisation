@@ -27,6 +27,9 @@ function bbconnect_personalisation_init() {
         // Plugin updates
         new BbConnectUpdates(__FILE__, 'BrownBox', 'bbconnect-personalisation');
     }
+    if (!wp_next_scheduled('bbconnect_personalisation_generate_keys_for_all_users')) {
+    	wp_schedule_event(current_time('timestamp', true), 'hourly', 'bbconnect_personalisation_generate_keys_for_all_users');
+    }
 }
 add_action('plugins_loaded', 'bbconnect_personalisation_init');
 
