@@ -75,16 +75,28 @@ add_action('bbconnect_personalisation_generate_keys_for_all_users', 'bbconnect_p
  */
 function bbconnect_personalisation_generate_keys_for_all_users() {
     if (empty(get_option('bbconnect_personalisation_generate_lock'))) {
-        update_option('bbconnect_personalisation_generate_lock', true);
         // Generate a unique key for all existing users
         set_time_limit(600);
-        $users = get_users();
+        $args = array(
+        		'meta_query' => array(
+		        		'relation' => 'OR',
+		        		array(
+		        				'key' => 'bbconnect_personalisation_key',
+		        				'compare' => 'NOT EXISTS',
+		        		),
+		        		array(
+		        				'key' => 'bbconnect_personalisation_key',
+		        				'value' => '',
+		        		),
+		        )
+        );
+        $users = get_users($args);
         foreach ($users as $user) {
             set_time_limit(300);
             update_option('bbconnect_personalisation_generate_lock', $user->ID);
             bbconnect_personalisation_get_key_for_user($user);
+	        delete_option('bbconnect_personalisation_generate_lock');
         }
-        delete_option('bbconnect_personalisation_generate_lock');
     }
 }
 
